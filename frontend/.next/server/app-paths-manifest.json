@@ -1,3 +1,4 @@
 {
+  "/embed/[id]/page": "app/embed/[id]/page.js",
   "/page": "app/page.js"
 }

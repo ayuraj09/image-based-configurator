@@ -29,9 +29,9 @@ async function testDatabaseConnection() {
     process.exit(1);
   }
 }
-
 // Initialize database connection
 testDatabaseConnection();
+
 
 // Configure multer for image uploads
 const storage = multer.diskStorage({

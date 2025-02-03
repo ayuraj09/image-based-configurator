@@ -52,6 +52,14 @@ const ImageSequenceViewer: React.FC<ImageSequenceViewerProps> = ({
     startXRef.current = null;
   };
 
+  // Preload images for smooth transitions
+  useEffect(() => {
+    images.forEach((imageUrl) => {
+      const img = new Image();
+      img.src = `http://localhost:3001${imageUrl}`;
+    });
+  }, [images]);
+
   return (
     <div
       ref={containerRef}
@@ -59,16 +67,22 @@ const ImageSequenceViewer: React.FC<ImageSequenceViewerProps> = ({
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
-      className="relative cursor-grab active:cursor-grabbing select-none"
+      className="relative cursor-grab active:cursor-grabbing select-none bg-[#0A2F2F] rounded-xl shadow-lg overflow-hidden"
       style={{ width, height }}
     >
-      <img
-        src={`http://localhost:3001${images[currentImageIndex]}`}
-        alt={`Sequence image ${currentImageIndex + 1}`}
-        className="absolute top-0 left-0 w-full h-full object-contain"
-        draggable={false}
-      />
-      <div className="absolute bottom-2 right-2 bg-black/50 text-white px-2 py-1 rounded">
+      <div className="relative w-full h-full">
+        {images.map((image, index) => (
+          <img
+            key={image}
+            src={`http://localhost:3001${image}`}
+            alt={`Sequence image ${index + 1}`}
+            className={`absolute top-0 left-0 w-full h-full object-contain
+              ${index === currentImageIndex ? "opacity-100" : "opacity-0"}`}
+            draggable={false}
+          />
+        ))}
+      </div>
+      <div className="absolute bottom-4 right-4 bg-[#E9F75E] text-[#0A2F2F] px-3 py-1.5 rounded-full font-medium text-sm shadow-md">
         {currentImageIndex + 1} / {images.length}
       </div>
     </div>
