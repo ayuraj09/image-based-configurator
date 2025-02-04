@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 
 interface ImageSequenceViewerProps {
   images: string[]; // Array of image URLs
@@ -55,7 +56,7 @@ const ImageSequenceViewer: React.FC<ImageSequenceViewerProps> = ({
   // Preload images for smooth transitions
   useEffect(() => {
     images.forEach((imageUrl) => {
-      const img = new Image();
+      const img = new window.Image();
       img.src = imageUrl;
     });
   }, [images]);
@@ -72,10 +73,12 @@ const ImageSequenceViewer: React.FC<ImageSequenceViewerProps> = ({
     >
       <div className="relative w-full h-full">
         {images.map((image, index) => (
-          <img
+          <Image
             key={image}
             src={image}
             alt={`Sequence image ${index + 1}`}
+            width={width}
+            height={height}
             className={`absolute top-0 left-0 w-full h-full object-contain
               ${index === currentImageIndex ? "opacity-100" : "opacity-0"}`}
             draggable={false}
