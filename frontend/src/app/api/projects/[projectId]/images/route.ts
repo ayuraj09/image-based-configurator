@@ -5,10 +5,10 @@ import { join } from "path";
 
 export async function POST(
   request: Request,
-  context: { params: { projectId: string } }
+  { params }: { params: { projectId: string } }
 ) {
   try {
-    const { projectId } = context.params;
+    const { projectId } = params;
     const formData = await request.formData();
     const files = formData.getAll("images") as File[];
 
