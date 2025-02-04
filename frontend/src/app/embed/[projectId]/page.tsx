@@ -10,7 +10,7 @@ interface EmbedPageProps {
 }
 
 async function getProjectData(projectId: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  const baseUrl = process.env.PORT;
   const response = await axios.get(`${baseUrl}/api/projects/${projectId}`);
   return response.data;
 }

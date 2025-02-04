@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT;
 const API_BASE_URL =
   typeof window === "undefined" ? `http://localhost:${PORT}/api` : "/api";
 
