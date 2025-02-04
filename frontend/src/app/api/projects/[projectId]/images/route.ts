@@ -4,12 +4,12 @@ import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
 
 export async function POST(
-  req: Request,
+  request: Request,
   { params }: { params: { projectId: string } }
 ) {
   try {
     const { projectId } = params;
-    const formData = await req.formData();
+    const formData = await request.formData();
     const files = formData.getAll("images") as File[];
 
     if (!files || files.length === 0) {
