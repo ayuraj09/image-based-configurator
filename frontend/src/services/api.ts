@@ -1,7 +1,8 @@
 import axios from "axios";
 
+const PORT = process.env.PORT || 3001;
 const API_BASE_URL =
-  typeof window === "undefined" ? "http://localhost:3000/api" : "/api";
+  typeof window === "undefined" ? `http://localhost:${PORT}/api` : "/api";
 
 export interface Project {
   id: string;
@@ -61,10 +62,8 @@ export const api = {
         }
       );
       return response.data;
-    } catch (err) {
-      // throw new Error("Failed to upload images");
-      throw new Error(err instanceof Error ? err.message : "Failed to create project");
-
+    } catch (error) {
+      throw new Error("Failed to upload images");
     }
   },
   async deleteProject(projectId: string) {
@@ -73,10 +72,8 @@ export const api = {
         `${API_BASE_URL}/projects/${projectId}`
       );
       return response.data;
-    } catch (err) {
-      // throw new Error("Failed to delete project");
-      throw new Error(err instanceof Error ? err.message : "Failed to create project");
-
+    } catch (error) {
+      throw new Error("Failed to delete project");
     }
   },
 };
