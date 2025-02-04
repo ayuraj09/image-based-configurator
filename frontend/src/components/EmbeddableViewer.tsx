@@ -9,7 +9,6 @@ interface EmbeddableViewerProps {
 }
 
 const EmbeddableViewer: React.FC<EmbeddableViewerProps> = ({
-  projectId,
   images,
 }) => {
   return (

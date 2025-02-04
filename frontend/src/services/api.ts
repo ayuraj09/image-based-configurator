@@ -61,8 +61,10 @@ export const api = {
         }
       );
       return response.data;
-    } catch (error) {
-      throw new Error("Failed to upload images");
+    } catch (err) {
+      // throw new Error("Failed to upload images");
+      throw new Error(err instanceof Error ? err.message : "Failed to create project");
+
     }
   },
   async deleteProject(projectId: string) {
@@ -71,8 +73,10 @@ export const api = {
         `${API_BASE_URL}/projects/${projectId}`
       );
       return response.data;
-    } catch (error) {
-      throw new Error("Failed to delete project");
+    } catch (err) {
+      // throw new Error("Failed to delete project");
+      throw new Error(err instanceof Error ? err.message : "Failed to create project");
+
     }
   },
 };

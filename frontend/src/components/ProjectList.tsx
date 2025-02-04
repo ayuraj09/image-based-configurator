@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { api, Project } from "../services/api";
+import { Project } from "../services/api";
 import ImageSequenceViewer from "./ImageSequenceViewer";
 
 export default function ProjectList() {
@@ -25,7 +25,9 @@ export default function ProjectList() {
         setError(data.error || "Failed to load projects");
       }
     } catch (err) {
-      setError("Failed to load projects");
+      // setError("Failed to load projects");
+      setError(err instanceof Error ? err.message : "Failed to create project");
+
     } finally {
       setLoading(false);
     }
