@@ -1,5 +1,5 @@
 import { use } from "react";
-import { api } from "../../../services/api";
+// import { api } from "../../../services/api";
 import axios from "axios";
 import EmbeddableViewer from "../../../components/EmbeddableViewer";
 
