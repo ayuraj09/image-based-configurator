@@ -11,10 +11,25 @@
       "static/chunks/main-app.js",
       "static/chunks/app/page.js"
     ],
-    "/embed/[id]/page": [
+    "/api/projects/route": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/embed/[id]/page.js"
+      "static/chunks/app/api/projects/route.js"
+    ],
+    "/api/projects/[projectId]/images/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/projects/[projectId]/images/route.js"
+    ],
+    "/api/projects/[projectId]/route": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/api/projects/[projectId]/route.js"
+    ],
+    "/embed/[projectId]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/embed/[projectId]/page.js"
     ]
   }
 }

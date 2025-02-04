@@ -16,9 +16,14 @@ export default function ProjectList() {
 
   const loadProjects = async () => {
     try {
-      const data = await api.getProjects();
-      setProjects(data);
-      setError(null);
+      const response = await fetch("/api/projects");
+      const data = await response.json();
+      if (response.ok) {
+        setProjects(data);
+        setError(null);
+      } else {
+        setError(data.error || "Failed to load projects");
+      }
     } catch (err) {
       setError("Failed to load projects");
     } finally {
@@ -29,32 +34,62 @@ export default function ProjectList() {
   const handleCreateProject = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const project = await api.createProject(newProject);
-      setProjects([...projects, project]);
+      const response = await fetch("/api/projects", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newProject),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to create project");
+      }
+      setProjects([...projects, data]);
       setNewProject({ name: "", description: "" });
       setError(null);
     } catch (err) {
-      setError("Failed to create project");
+      setError(err instanceof Error ? err.message : "Failed to create project");
     }
   };
 
   const handleImageUpload = async (projectId: string, files: FileList) => {
     try {
-      await api.uploadImages(projectId, Array.from(files));
+      const formData = new FormData();
+      Array.from(files).forEach((file) => {
+        formData.append("images", file);
+      });
+
+      const response = await fetch(`/api/projects/${projectId}/images`, {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to upload images");
+      }
+
       await loadProjects();
       setError(null);
     } catch (err) {
-      setError("Failed to upload images");
+      setError(err instanceof Error ? err.message : "Failed to upload images");
     }
   };
 
   const handleDeleteProject = async (projectId: string) => {
     try {
-      await api.deleteProject(projectId);
+      const response = await fetch(`/api/projects/${projectId}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to delete project");
+      }
       setProjects(projects.filter((project) => project.id !== projectId));
       setError(null);
     } catch (err) {
-      setError("Failed to delete project");
+      setError(err instanceof Error ? err.message : "Failed to delete project");
     }
   };
 

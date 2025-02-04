@@ -56,7 +56,7 @@ const ImageSequenceViewer: React.FC<ImageSequenceViewerProps> = ({
   useEffect(() => {
     images.forEach((imageUrl) => {
       const img = new Image();
-      img.src = `http://localhost:3001${imageUrl}`;
+      img.src = imageUrl;
     });
   }, [images]);
 
@@ -74,7 +74,7 @@ const ImageSequenceViewer: React.FC<ImageSequenceViewerProps> = ({
         {images.map((image, index) => (
           <img
             key={image}
-            src={`http://localhost:3001${image}`}
+            src={image}
             alt={`Sequence image ${index + 1}`}
             className={`absolute top-0 left-0 w-full h-full object-contain
               ${index === currentImageIndex ? "opacity-100" : "opacity-0"}`}

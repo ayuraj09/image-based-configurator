@@ -1,7 +1,6 @@
-"use client";
-
-import { useEffect, useState } from "react";
+import { use } from "react";
 import { api } from "../../../services/api";
+import axios from "axios";
 import EmbeddableViewer from "../../../components/EmbeddableViewer";
 
 interface EmbedPageProps {
@@ -10,36 +9,24 @@ interface EmbedPageProps {
   };
 }
 
+async function getProjectData(projectId: string) {
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  const response = await axios.get(`${baseUrl}/api/projects/${projectId}`);
+  return response.data;
+}
+
 export default function EmbedPage({ params }: EmbedPageProps) {
-  const [images, setImages] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const loadProject = async () => {
-      try {
-        const project = await api.getProject(params.projectId);
-        if (project.images) {
-          setImages(project.images.map((img) => img.url));
-        }
-        setError(null);
-      } catch (err) {
-        setError("Failed to load project");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadProject();
-  }, [params.projectId]);
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
-  if (images.length === 0) return <div>No images found</div>;
+  const resolvedParams = use(Promise.resolve(params));
+  const project = use(getProjectData(resolvedParams.projectId));
+  const imageUrls = project.images.map((image) => image.url);
+  console.log(imageUrls);
 
   return (
     <div className="w-full h-screen flex items-center justify-center bg-gray-100">
-      <EmbeddableViewer projectId={params.projectId} images={images} />
+      <EmbeddableViewer
+        projectId={resolvedParams.projectId}
+        images={imageUrls}
+      />
     </div>
   );
 }

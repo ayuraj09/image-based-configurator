@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:3001/api";
+const API_BASE_URL =
+  typeof window === "undefined" ? "http://localhost:3000/api" : "/api";
 
 export interface Project {
   id: string;
@@ -44,27 +45,33 @@ export const api = {
 
   // Image APIs
   async uploadImages(projectId: string, images: File[]) {
-    const formData = new FormData();
-    images.forEach((image) => {
-      formData.append("images", image);
-    });
+    try {
+      const formData = new FormData();
+      images.forEach((image) => {
+        formData.append("images", image);
+      });
 
-    const response = await axios.post<Image[]>(
-      `${API_BASE_URL}/projects/${projectId}/images`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-    return response.data;
+      const response = await axios.post<Image[]>(
+        `${API_BASE_URL}/projects/${projectId}/images`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      throw new Error("Failed to upload images");
+    }
   },
-  deleteProject: async (projectId: string) => {
-    const response = await axios.delete(
-      `${API_BASE_URL}/projects/${projectId}`
-    );
-    if (!response.ok) {
+  async deleteProject(projectId: string) {
+    try {
+      const response = await axios.delete(
+        `${API_BASE_URL}/projects/${projectId}`
+      );
+      return response.data;
+    } catch (error) {
       throw new Error("Failed to delete project");
     }
   },
