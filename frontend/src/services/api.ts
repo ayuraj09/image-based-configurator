@@ -63,7 +63,11 @@ export const api = {
       );
       return response.data;
     } catch (error) {
-      throw new Error("Failed to upload images");
+      throw new Error(
+        `Failed to delete project: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
     }
   },
   async deleteProject(projectId: string) {
@@ -73,7 +77,11 @@ export const api = {
       );
       return response.data;
     } catch (error) {
-      throw new Error("Failed to delete project");
+      throw new Error(
+        `Failed to delete project: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
+      );
     }
   },
 };
