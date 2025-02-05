@@ -27,7 +27,6 @@ export default function ProjectList() {
     } catch (err) {
       // setError("Failed to load projects");
       setError(err instanceof Error ? err.message : "Failed to create project");
-
     } finally {
       setLoading(false);
     }
@@ -57,36 +56,31 @@ export default function ProjectList() {
 
   const handleImageUpload = async (projectId: string, files: FileList) => {
     try {
-
       const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB limit
-      const oversizedFiles = Array.from(files).filter(
-        (file) => file.size > MAX_FILE_SIZE
-      );
+      const fileArray = Array.from(files);
+      const uploadedImages = [];
 
-      if (oversizedFiles.length > 0) {
-        setError(
-          `Some files exceed the 4MB size limit: ${oversizedFiles
-            .map((f) => f.name)
-            .join(", ")}`
-        );
-        return;
-      }
+      for (const file of fileArray) {
+        if (file.size > MAX_FILE_SIZE) {
+          setError(`File ${file.name} exceeds the 4MB size limit`);
+          return;
+        }
 
-
-      const formData = new FormData();
-      Array.from(files).forEach((file) => {
+        const formData = new FormData();
         formData.append("images", file);
-      });
 
-      const response = await fetch(`/api/projects/${projectId}/images`, {
-        method: "POST",
-        body: formData,
-      });
+        const response = await fetch(`/api/projects/${projectId}/images`, {
+          method: "POST",
+          body: formData,
+        });
 
-      const data = await response.json();
-      if (!response.ok) {
-        console.log(data);
-        throw new Error(data.error || "Failed to upload images");
+        const data = await response.json();
+        if (!response.ok) {
+          console.log(data);
+          throw new Error(data.error || "Failed to upload images");
+        }
+
+        uploadedImages.push(...data);
       }
 
       await loadProjects();
