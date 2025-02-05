@@ -4,10 +4,11 @@ import axios from "axios";
 import EmbeddableViewer from "../../../components/EmbeddableViewer";
 
 interface EmbedPageProps {
-  params: {
+  params: Promise<{
     projectId: string;
-  };
+  }>;
 }
+
 
 async function getProjectData(projectId: string) {
   const baseUrl = process.env.PORT;
@@ -16,7 +17,7 @@ async function getProjectData(projectId: string) {
 }
 
 export default function EmbedPage({ params }: EmbedPageProps) {
-  const resolvedParams = use(Promise.resolve(params));
+  const resolvedParams = use(params);
   const project = use(getProjectData(resolvedParams.projectId));
   const imageUrls = project.images.map((image) => image.url);
   console.log(imageUrls);
