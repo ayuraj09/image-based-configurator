@@ -1,28 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/utils/prisma";
-import { writeFile, mkdir } from "fs/promises";
-import { join } from "path";
+import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
+import { Readable } from "stream";
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 export async function POST(
-  request: NextRequest,
+  req: Request,
   { params }: { params: Promise<{ projectId: string }> }
-
-  
 ) {
   try {
-    // const { projectId } = context.params;
     const { projectId } = await params;
 
-    const formData = await request.formData();
+    const formData = await req.formData();
     const files = formData.getAll("images") as File[];
 
     if (!files || files.length === 0) {
       return NextResponse.json({ error: "No files uploaded" }, { status: 400 });
     }
-
-    // Ensure upload directory exists in public folder
-    const uploadDir = join(process.cwd(), "public", "uploads");
-    await mkdir(uploadDir, { recursive: true });
 
     const images = [];
     // Process images sequentially to maintain order
@@ -31,17 +31,34 @@ export async function POST(
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
 
-      // Create unique filename
-      const filename = `${Date.now()}-${file.name}`;
-      const filepath = join(uploadDir, filename);
+      // Upload to Cloudinary
+      const result = await new Promise<UploadApiResponse>((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            folder: "cg-viz-studios",
+          },
+          (error, result) => {
+            if (error) {
+                reject(error);
+            } else if (result) {
+                resolve(result);
+            } else {
+                reject(new Error('No result returned from upload'));
+            }
+          }
+        );
 
-      // Write file to public/uploads directory
-      await writeFile(filepath, buffer);
+        // Convert buffer to stream and pipe to Cloudinary
+        const stream = new Readable();
+        stream.push(buffer);
+        stream.push(null);
+        stream.pipe(uploadStream);
+      });
 
-      // Create image record in database with correct public URL
+      // Create image record in database with Cloudinary URL
       const image = await prisma.image.create({
         data: {
-          url: `/uploads/${filename}`,
+          url: result.secure_url,
           sequence: index,
           projectId,
         },

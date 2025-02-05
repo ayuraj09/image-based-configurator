@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/utils/prisma";
 
-
 export async function DELETE(
-  req: NextRequest,
+  req: Request,
   { params }: { params: Promise<{ projectId: string }> }
-
 ) {
   try {
     const { projectId } = await params;
@@ -34,16 +32,12 @@ export async function DELETE(
     return NextResponse.json({ message: "Project deleted successfully" });
   } catch (error) {
     // console.error("Delete project error:", error);
-    return NextResponse.json(
-      { error: error },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: error }, { status: 500 });
   }
 }
 export async function GET(
-  req: NextRequest,
+  req: Request,
   { params }: { params: Promise<{ projectId: string }> }
-
 ) {
   try {
     const { projectId } = await params;
@@ -62,9 +56,6 @@ export async function GET(
     return NextResponse.json(project);
   } catch (error) {
     // console.error("Delete project error:", error);
-    return NextResponse.json(
-      { error: error },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: error }, { status: 500 });
   }
 }

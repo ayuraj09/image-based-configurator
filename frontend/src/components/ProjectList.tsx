@@ -76,6 +76,7 @@ export default function ProjectList() {
       await loadProjects();
       setError(null);
     } catch (err) {
+      console.log(err);
       setError(err instanceof Error ? err.message : "Failed to upload images");
     }
   };
