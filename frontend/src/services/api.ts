@@ -1,6 +1,5 @@
 import axios from "axios";
 
-const PORT = process.env.PORT;
 const API_BASE_URL =
   typeof window === "undefined" ? `https://image-based-configurator.vercel.app/api` : "/api";
 

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import {NextResponse } from "next/server";
 import prisma from "@/utils/prisma";
 import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 import { Readable } from "stream";
