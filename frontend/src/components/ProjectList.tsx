@@ -57,6 +57,22 @@ export default function ProjectList() {
 
   const handleImageUpload = async (projectId: string, files: FileList) => {
     try {
+
+      const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB limit
+      const oversizedFiles = Array.from(files).filter(
+        (file) => file.size > MAX_FILE_SIZE
+      );
+
+      if (oversizedFiles.length > 0) {
+        setError(
+          `Some files exceed the 4MB size limit: ${oversizedFiles
+            .map((f) => f.name)
+            .join(", ")}`
+        );
+        return;
+      }
+
+
       const formData = new FormData();
       Array.from(files).forEach((file) => {
         formData.append("images", file);

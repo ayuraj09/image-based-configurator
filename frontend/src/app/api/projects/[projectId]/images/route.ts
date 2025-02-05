@@ -23,6 +23,15 @@ export async function POST(
     if (!files || files.length === 0) {
       return NextResponse.json({ error: "No files uploaded" }, { status: 400 });
     }
+    const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB limit
+    for (const file of files) {
+      if (file.size > MAX_FILE_SIZE) {
+        return NextResponse.json(
+          { error: `File ${file.name} exceeds the 4MB size limit` },
+          { status: 413 }
+        );
+      }
+    }
 
     const images = [];
     // Process images sequentially to maintain order
