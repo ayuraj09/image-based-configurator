@@ -19,7 +19,8 @@ async function getProjectData(projectId: string) {
 export default function EmbedPage({ params }: EmbedPageProps) {
   const resolvedParams = use(params);
   const project = use(getProjectData(resolvedParams.projectId));
-  const imageUrls = project.images.map((image) => image.url);
+
+  const imageUrls = project.images.map((image: { url: string }) => image.url);
   console.log(imageUrls);
 
   return (
