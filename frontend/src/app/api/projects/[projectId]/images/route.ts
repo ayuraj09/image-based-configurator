@@ -1,14 +1,18 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/utils/prisma";
 import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
 
 export async function POST(
-  request: Request,
-  context: { params: { projectId: string } }
+  request: NextRequest,
+  { params }: { params: Promise<{ projectId: string }> }
+
+  
 ) {
   try {
-    const { projectId } = context.params;
+    // const { projectId } = context.params;
+    const { projectId } = await params;
+
     const formData = await request.formData();
     const files = formData.getAll("images") as File[];
 

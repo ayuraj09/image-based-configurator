@@ -1,9 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/utils/prisma";
 
+
 export async function DELETE(
-  req: Request,
-  { params }: { params: { projectId: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ projectId: string }> }
+
 ) {
   try {
     const { projectId } = await params;
@@ -39,8 +41,9 @@ export async function DELETE(
   }
 }
 export async function GET(
-  req: Request,
-  { params }: { params: { projectId: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ projectId: string }> }
+
 ) {
   try {
     const { projectId } = await params;
@@ -55,21 +58,6 @@ export async function GET(
     if (!project) {
       return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }
-
-    // Delete all associated images from storage
-    // for (const image of project.images) {
-    //   const imagePath = path.join(process.cwd(), "public", image.url);
-    //   try {
-    //     fs.unlinkSync(imagePath);
-    //   } catch (err) {
-    //     console.error(`Failed to delete image file: ${imagePath}`, err);
-    //   }
-    // }
-
-    // Delete the project and all associated images from the database
-    // await prisma.project.delete({
-    //   where: { id: projectId },
-    // });
 
     return NextResponse.json(project);
   } catch (error) {
